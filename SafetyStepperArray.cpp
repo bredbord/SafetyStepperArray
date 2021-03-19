@@ -174,7 +174,7 @@ void SafetyStepperArray::run() { // RUN FUNCTION
 
   // POSITIONAL UPDATE BASED ON TIMEOUT STATUS
   for (short s = 0; s < _numSteppers; s++) {
-    if (_timeout) _stepper[s]->moveTo(_stepperSafePositions[s]);  // if timeout occured, request motion to nearest safe point
+    if (_timeout) {_stepper[s]->setAcceleration(_maximumAcceleration); _stepper[s]->moveTo(_stepperSafePositions[s]); }  // if timeout occured, request motion to nearest safe point
     else _stepper[s]->moveTo(_stepperPositions[s]);  // otherwise, operate on user data
   }
 
