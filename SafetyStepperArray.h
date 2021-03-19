@@ -7,6 +7,8 @@
 #ifndef SAFETY_STEPPER_ARRAY_H
 #define SAFETY_STEPPER_ARRAY_H
 
+#include "Arduino.h"
+
 #include <AccelStepper.h>
 
 #define MAX_SIZE 16
