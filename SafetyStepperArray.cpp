@@ -174,7 +174,7 @@ void SafetyStepperArray::run() { // RUN FUNCTION
 
   // POSITIONAL UPDATE BASED ON TIMEOUT STATUS
   for (short s = 0; s < _numSteppers; s++) {
-    if (_timeout) {_stepper[s]->setMaxSpeed(_maximumSpeed); _stepper[s]->moveTo(_stepperSafePositions[s]); }  // if timeout occured, request motion to nearest safe point
+    if (_timeout) { _stepper[s]->setMaxSpeed(_maximumSpeed); _stepper[s]->moveTo(_stepperSafePositions[s]); }  // if timeout occured, request motion to nearest safe point
     else _stepper[s]->moveTo(_stepperPositions[s]);  // otherwise, operate on user data
   }
 
@@ -189,8 +189,7 @@ void SafetyStepperArray::run() { // RUN FUNCTION
   // HARDWARE ENABLE AND DISABLE
   //We can disable IF and ONLY IF we are in a timeout state, we are holding position, and we've been holding for two seconds
   if (_timeout && motionHold && (_motionHoldTime > MOTION_HOLD_TIMEOUT)) { this->enableSteppers(false); }
-  else if (!_steppersEnabled) { this->enableSteppers(true); delay(10); digitalWrite(13, HIGH); }// BAD DELAY. make time-based
-  else  digitalWrite(13, LOW);
+  else if (!_steppersEnabled) { this->enableSteppers(true); delay(10); }// BAD DELAY. make time-based
 
   // HARDWARE RUNNING
   if (_steppersEnabled) { 
