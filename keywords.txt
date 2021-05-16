@@ -1,0 +1,30 @@
+##############################################
+# Syntax Coloring Map For Safety Stepper Array
+##############################################
+
+##############################################
+# Datatypes (KEYWORD1)
+##############################################
+
+SafetyStepperArray	KEYWORD1
+
+##############################################
+# Methods and Functions (KEYWORD2)
+##############################################
+
+addStepper	KEYWORD2
+addStepper KEYWORD2
+begin KEYWORD2
+setStepperPosition KEYWORD2
+setStepperAcceleration KEYWORD2
+setStepperSpeed KEYWORD2
+setStepperSafePosition KEYWORD2
+setHomeSpeed KEYWORD2
+setTimeoutMillis KEYWORD2
+homeSteppers KEYWORD2
+homeAll KEYWORD2
+run KEYWORD2
+int getStepperPosition KEYWORD2
+isEnabled KEYWORD2
+isHome KEYWORD2
+emergencyStop KEYWORD2

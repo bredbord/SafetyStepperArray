@@ -14,6 +14,8 @@
 #define MAX_SIZE 16
 #define MOTION_HOLD_TIMEOUT 1000
 
+#define HARDWARE_CATCHUP_MILLIS 10
+
 class SafetyStepperArray {
   
   private:
@@ -34,6 +36,7 @@ class SafetyStepperArray {
     unsigned int _kStepperTimeout;
     elapsedMillis _stepperTime;
     elapsedMillis _motionHoldTime;
+    elapsedMillis _hardwareCatchupTime;
 
     int _maximumSpeed;
     int _maximumAcceleration;

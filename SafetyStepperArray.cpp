@@ -122,7 +122,8 @@ void SafetyStepperArray::enableSteppers(bool state) { // Enable stepper states
     digitalWrite(_sPin, HIGH);
     digitalWrite(_ePin, LOW);
     _steppersEnabled = true;
-    _stepperTime = 0; //reset the clock
+    _stepperTime = 0; //reset the clocks
+    _hardwareCatchupTime = 0;
     
   } else {
     digitalWrite(_sPin, LOW);
@@ -174,7 +175,7 @@ void SafetyStepperArray::run() { // RUN FUNCTION
 
   // POSITIONAL UPDATE BASED ON TIMEOUT STATUS
   for (short s = 0; s < _numSteppers; s++) {
-    if (_timeout) { _stepper[s]->setMaxSpeed(_maximumSpeed); _stepper[s]->moveTo(_stepperSafePositions[s]); }  // if timeout occured, request motion to nearest safe point
+    if (_timeout) {_stepper[s]->moveTo(_stepperSafePositions[s]); }  // if timeout occured, request motion to nearest safe point
     else _stepper[s]->moveTo(_stepperPositions[s]);  // otherwise, operate on user data
   }
 
@@ -189,10 +190,10 @@ void SafetyStepperArray::run() { // RUN FUNCTION
   // HARDWARE ENABLE AND DISABLE
   //We can disable IF and ONLY IF we are in a timeout state, we are holding position, and we've been holding for two seconds
   if (_timeout && motionHold && (_motionHoldTime > MOTION_HOLD_TIMEOUT)) { this->enableSteppers(false); }
-  else if (!_steppersEnabled) { this->enableSteppers(true); delay(10); }// BAD DELAY. make time-based
+  else if (!_steppersEnabled) { this->enableSteppers(true); }
 
   // HARDWARE RUNNING
-  if (_steppersEnabled) { 
+  if (_steppersEnabled && _hardwareCatchupTime > HARDWARE_CATCHUP_MILLIS) { 
     for(short s = 0; s < _numSteppers; s++) {
       AccelStepper *currentStepper = _stepper[s];
       // if we have hit the endstop and are requesting to move to a lesser position, don't run.
