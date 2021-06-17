@@ -61,7 +61,7 @@ bool SafetyStepperArray::addStepper(byte stepPin, byte dirPin, byte limitPin) { 
 
 void SafetyStepperArray::begin() { // Initalizes all necessary pins and sets default motion 
   
-  //Pin setup
+  //Pin setupS
   pinMode(_sPin, OUTPUT);
   pinMode(_ePin, OUTPUT);
 
@@ -113,6 +113,7 @@ bool SafetyStepperArray::setHomeSpeed(int speed) {  // set the homing speed
 
 void SafetyStepperArray::setTimeoutMillis(unsigned int timeoutMillis) { _kStepperTimeout = timeoutMillis; }  // set hardware timeout clock
 
+void SafetyStepperArray::reverseSteppers(bool mode) { for (short s = 0; s < _numSteppers; s++) { this->_stepper[s]->setPinsInverted(mode, false, false); } }
 
 // Motion and Homing======================================================================
 

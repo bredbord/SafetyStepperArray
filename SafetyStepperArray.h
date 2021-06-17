@@ -64,6 +64,7 @@ class SafetyStepperArray {
     bool setStepperSafePosition(byte, int);  // set a stepper's safe position
     bool setHomeSpeed(int); // set the homing speed
     void setTimeoutMillis(unsigned int); // set the timeout Clock
+    void reverseSteppers(bool); // reverse steppers
 
     // Motion and Homing
     bool homeSteppers(byte, byte, int);  // home from and to (inclusive) on a timer
