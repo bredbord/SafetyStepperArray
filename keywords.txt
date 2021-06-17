@@ -29,3 +29,4 @@ int getStepperPosition	KEYWORD2
 isEnabled	KEYWORD2
 isHome	KEYWORD2
 emergencyStop	KEYWORD2
+reverseSteppers	KEYWORD2
