@@ -24,7 +24,7 @@ setTimeoutMillis	KEYWORD2
 getStepperPosition	KEYWORD2
 homeSteppers	KEYWORD2
 homeAll	KEYWORD2
-run	KEYWORD2
+runSteppers	KEYWORD2
 int getStepperPosition	KEYWORD2
 isEnabled	KEYWORD2
 isHome	KEYWORD2

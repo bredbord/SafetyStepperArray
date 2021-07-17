@@ -11,6 +11,7 @@
 SafetyStepperArray::SafetyStepperArray(byte enablePin, byte sleepPin, int maxStepperSpeed, int maxStepperAccel) {
   _stepper[MAX_SIZE] = nullptr;
   _stepperPositions[MAX_SIZE] = {};
+  _lastPositions[MAX_SIZE] = {};
   _limitPins[MAX_SIZE] = {};
   _stepperSafePositions[MAX_SIZE] = {};
   
@@ -44,7 +45,7 @@ bool SafetyStepperArray::addStepper(byte stepPin, byte dirPin, byte limitPin) { 
   
   if (_numSteppers < MAX_SIZE) {
     //allocate stepper
-    AccelStepper *newStepper = new AccelStepper(1, stepPin, dirPin);
+    AccelStepperExtended *newStepper = new AccelStepperExtended(1, stepPin, dirPin);
     
     if(newStepper == nullptr) return false;
 
@@ -74,7 +75,7 @@ void SafetyStepperArray::begin() { // Initalizes all necessary pins and sets def
     } 
 
   //Enable the steppers
-  this->enableSteppers(true);
+  this->enableSteppers(false);
 }
 
 
@@ -134,13 +135,15 @@ void SafetyStepperArray::enableSteppers(bool state) { // Enable stepper states
 }
 
 bool SafetyStepperArray::homeSteppers(byte startStep, byte stopStep, int homeTimeMillis) {  // home steppers
+  this->enableSteppers(true);
+  delay(10);
   
   startStep--; stopStep--;
   unsigned long currentTime = millis();  // time of homing start
   bool allHome;  // all home flag
 
   for (short s = startStep; s <= stopStep; s++) { // set all steppers to run backward to an arbitrailly far back position
-    AccelStepper *currentStepper = _stepper[s];
+    AccelStepperExtended *currentStepper = _stepper[s];
     currentStepper->setMaxSpeed(-_homeSpeed); 
     currentStepper->setAcceleration(_maximumAcceleration); 
     currentStepper->moveTo(-9999999);
@@ -167,7 +170,7 @@ bool SafetyStepperArray::homeSteppers(byte startStep, byte stopStep, int homeTim
 
 bool SafetyStepperArray::homeAll(int homeTimeMillis) { return this->homeSteppers(1, _numSteppers, homeTimeMillis); } // home all steppers
 
-void SafetyStepperArray::run() { // RUN FUNCTION
+void SafetyStepperArray::runSteppers() { // RUN FUNCTION
   
   // TIMEOUT CHECKING
   if (_stepperTime > _kStepperTimeout) _timeout = true;  // if we've timed out, flag the timeout bool
@@ -196,12 +199,12 @@ void SafetyStepperArray::run() { // RUN FUNCTION
   // HARDWARE RUNNING
   if (_steppersEnabled && _hardwareCatchupTime > HARDWARE_CATCHUP_MILLIS) { 
     for(short s = 0; s < _numSteppers; s++) {
-      AccelStepper *currentStepper = _stepper[s];
-      // if we have hit the endstop and are requesting to move to a lesser position, don't run.
-      if (! (!digitalRead(_limitPins[s]) && (currentStepper->targetPosition() < currentStepper->currentPosition())) ) currentStepper->run();
+      AccelStepperExtended *currentStepper = _stepper[s];
+      // as long as we are moving forward or not hitting the limit switch, run
+      if (currentStepper->getDirection() || digitalRead(_limitPins[s])) currentStepper->run();
     }
   }
-  
+
 }
 
 

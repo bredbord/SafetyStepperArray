@@ -9,7 +9,7 @@
 
 #include "Arduino.h"
 
-#include <AccelStepper.h>
+#include <AccelStepperExtended.h>
 
 #define MAX_SIZE 16
 #define MOTION_HOLD_TIMEOUT 1000
@@ -21,13 +21,14 @@ class SafetyStepperArray {
   private:
 
     //Steppers
-    AccelStepper *_stepper[MAX_SIZE];
+    AccelStepperExtended *_stepper[MAX_SIZE];
     int _stepperPositions[MAX_SIZE];  // target stepper positions
+    int _lastPositions[MAX_SIZE];
     int _limitPins[MAX_SIZE];         // motion limit pins
     int _stepperSafePositions[MAX_SIZE];  // stepper safe positions for disable
     
     bool _steppersEnabled;    // whether or not the steppers are enabled
-    bool _timeout;           // wheter or not we are timed out 
+    bool _timeout;           // wheter or not we are timed out
     
     byte _ePin;         // enable and sleep pins
     byte _sPin;
@@ -44,6 +45,7 @@ class SafetyStepperArray {
     int _homeSpeed;
 
     void enableSteppers(bool);  // set stepper states
+    byte getDirection(byte);
     
 
   public:
@@ -69,7 +71,7 @@ class SafetyStepperArray {
     // Motion and Homing
     bool homeSteppers(byte, byte, int);  // home from and to (inclusive) on a timer
     bool homeAll(int);
-    void run();
+    void runSteppers();
 
     // OBSERVERS===============
     int getStepperPosition(byte);
