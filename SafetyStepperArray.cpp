@@ -137,7 +137,7 @@ void SafetyStepperArray::enableSteppers(bool state) { // Enable stepper states
 bool SafetyStepperArray::homeSteppers(byte startStep, byte stopStep, int homeTimeMillis) {  // home steppers
   this->enableSteppers(true);
   delay(10);
-  
+
   startStep--; stopStep--;
   unsigned long currentTime = millis();  // time of homing start
   bool allHome;  // all home flag
@@ -146,21 +146,20 @@ bool SafetyStepperArray::homeSteppers(byte startStep, byte stopStep, int homeTim
     AccelStepperExtended *currentStepper = _stepper[s];
     currentStepper->setMaxSpeed(-_homeSpeed); 
     currentStepper->setAcceleration(_maximumAcceleration); 
-    currentStepper->moveTo(-9999999);
+    currentStepper->moveTo(-99999);
   } 
 
   do {
     allHome = true;  // assume home unless proven otherwise
     
     for (byte s = startStep; s <= stopStep; s++) {  // check each stepper
-      if (digitalRead(_limitPins[s]) == LOW) _stepper[s]->setCurrentPosition(0);  // for triggered limit switch
-      else { _stepper[s]->run(); allHome = false; }
+      if (digitalRead(_limitPins[s]) == HIGH) { allHome = false; _stepper[s]->run(); }
     }
     
   } while (!allHome && millis() - currentTime < homeTimeMillis);  // while all fixtures are not homed, and we are within the alotted time
 
   if (allHome) {
-    for (byte s = startStep; s <= stopStep; s++) { _stepperPositions[s] = 0; _stepper[s]->setMaxSpeed(_maximumSpeed); }  // Zero out stepper positions.
+    for (byte s = startStep; s <= stopStep; s++) { _stepperPositions[s] = 0; _stepper[s]->setMaxSpeed(_maximumSpeed); _stepper[s]->setCurrentPosition(0);}  // Zero out stepper positions.
     _stepperTime = 0;  // reset stepper timer
     return true;  // return success
   }
@@ -201,7 +200,8 @@ void SafetyStepperArray::runSteppers() { // RUN FUNCTION
     for(short s = 0; s < _numSteppers; s++) {
       AccelStepperExtended *currentStepper = _stepper[s];
       // as long as we are moving forward or not hitting the limit switch, run
-      if (currentStepper->getDirection() || digitalRead(_limitPins[s])) currentStepper->run();
+      //if (currentStepper->getDirection() || digitalRead(_limitPins[s])) 
+      currentStepper->run();
     }
   }
 
