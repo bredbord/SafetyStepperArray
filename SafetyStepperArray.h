@@ -23,7 +23,6 @@ class SafetyStepperArray {
     //Steppers
     AccelStepperExtended *_stepper[MAX_SIZE];
     int _stepperPositions[MAX_SIZE];  // target stepper positions
-    int _lastPositions[MAX_SIZE];
     int _limitPins[MAX_SIZE];         // motion limit pins
     int _stepperSafePositions[MAX_SIZE];  // stepper safe positions for disable
     
